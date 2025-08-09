@@ -26,7 +26,6 @@ services:
 
 
   bankapp:
-    build:
     image: atharvkarpe/bank-app
     container_name: bankapp
     ports: 
