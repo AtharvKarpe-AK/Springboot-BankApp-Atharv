@@ -13,6 +13,6 @@ WORKDIR /app
 COPY --from=builder /app/target/*.jar bankapp.jar
 
 
-EXPOSE 8080
+EXPOSE 9090
 
 CMD ["java","-jar","/app/bankapp.jar"]
