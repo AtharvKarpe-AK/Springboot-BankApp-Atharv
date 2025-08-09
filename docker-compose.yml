@@ -27,7 +27,7 @@ services:
 
   bankapp:
     build:
-      context: .
+    image: atharvkarpe/bank-app
     container_name: bankapp
     ports: 
       - 9090:9090
