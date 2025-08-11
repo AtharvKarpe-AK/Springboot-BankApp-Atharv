@@ -1,5 +1,5 @@
 pipeline{
-    agent any;
+    agent {label "dev-bank-app"};
     stages{
         stage("Clone_Code"){
             steps{
