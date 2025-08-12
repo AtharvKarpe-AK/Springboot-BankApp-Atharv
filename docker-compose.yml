@@ -26,7 +26,8 @@ services:
 
 
   bankapp:
-    image: atharvkarpe/bank-app
+    image: atharvkarpe/bank-app:latest
+    pull_policy: always
     container_name: bankapp
     ports: 
       - 9090:9090
