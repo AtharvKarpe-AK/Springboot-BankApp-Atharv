@@ -36,7 +36,10 @@ pipeline{
         }
         stage("Deploy"){
             steps{
-                
+                echo "removing old image"
+                sh "docker rmi bank-app:latest || true"
+                echo "pulling latest"
+                sh "docker pull atharvkarpe/bank-app:latest"
                 sh "docker compose down"
                 sh "docker compose up -d --build bankapp"
                 echo "Application deploy ho gaya"
