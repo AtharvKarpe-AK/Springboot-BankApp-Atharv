@@ -42,5 +42,14 @@ pipeline{
                 echo "Application deploy ho gaya"
             }
         }
+        stage("Cleanup"){
+            steps{
+                echo "Cleanup unused containers and images"
+                sh "docker system prune -af --volumes"
+                sh "docker container prune -f"
+                sh "docker image prune -af"
+                echo "All cleanup ho gaya...."
+            }    
+        }
     }
 }
