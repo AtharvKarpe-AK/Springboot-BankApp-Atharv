@@ -9,7 +9,7 @@ pipeline{
         }
         stage("Trivy Scan"){
             steps{
-                sh "trivy fs . -o result.txt"
+                sh "trivy fs ."
             }
         }
         stage("Build"){
@@ -51,15 +51,14 @@ pipeline{
         success{
             emailext body: 'Hello Atharv, Good News! Your pipeline is successfull..',
             subject: 'Pipeline is successfull',
-            to: 'atharvkkarpe@gmail.com',
-            attachmentsPattern: 'result.txt'
+            to: 'atharvkkarpe@gmail.com'
+            
             
         }
         failure{
             emailext body: 'Hello Atharv, Bad News. Your pipeline is failed..',
             subject: 'Pipeline is failed',
-            to: 'atharvkkarpe@gmail.com',
-            attachmentsPattern: 'result.txt'
+            to: 'atharvkkarpe@gmail.com'
         }
     }
 }
