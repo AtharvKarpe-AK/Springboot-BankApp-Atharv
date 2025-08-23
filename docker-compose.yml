@@ -26,7 +26,7 @@ services:
 
 
   bankapp:
-    image: atharvkarpe/bank-app:latest
+    image: atharvkarpe/bank_app1:latest
     pull_policy: always
     container_name: bankapp
     ports: 
