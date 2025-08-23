@@ -7,6 +7,11 @@ pipeline{
             echo "Code clone ho gaya"
             }
         }
+        stage("Trivy Scan"){
+            steps{
+                sh "trivy fs . -o result.txt"
+            }
+        }
         stage("Build"){
             steps{
                 sh "docker build -t bank_app1 ."
@@ -46,13 +51,15 @@ pipeline{
         success{
             emailext body: 'Hello Atharv, Good News! Your pipeline is successfull..',
             subject: 'Pipeline is successfull',
-            to: 'atharvkkarpe@gmail.com'
+            to: 'atharvkkarpe@gmail.com',
+            attachmentsPattern: 'result.txt'
             
         }
         failure{
             emailext body: 'Hello Atharv, Bad News. Your pipeline is failed..',
             subject: 'Pipeline is failed',
-            to: 'atharvkkarpe@gmail.com'
+            to: 'atharvkkarpe@gmail.com',
+            attachmentsPattern: 'result.txt'
         }
     }
 }
