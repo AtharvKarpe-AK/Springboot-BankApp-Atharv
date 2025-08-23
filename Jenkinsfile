@@ -44,14 +44,14 @@ pipeline{
     }
     post{
         success{
-            emailext body: 'Hello Atharv, Good News! Your pipeline is successfull..'
-            subject: 'Pipeline is successfull'
+            emailext body: 'Hello Atharv, Good News! Your pipeline is successfull..',
+            subject: 'Pipeline is successfull',
             to: 'atharvkkarpe@gmail.com'
             
         }
         failure{
-            emailext body: 'Hello Atharv, Bad News. Your pipeline is failed..'
-            subject: 'Pipeline is failed'
+            emailext body: 'Hello Atharv, Bad News. Your pipeline is failed..',
+            subject: 'Pipeline is failed',
             to: 'atharvkkarpe@gmail.com'
         }
     }
