@@ -1,58 +1,45 @@
 pipeline{
-    agent any;
+    agent {label "bank_dev"};
     stages{
-        stage("Clone_Code"){
+        stage("Clone"){
             steps{
                 git url: "https://github.com/AtharvKarpe-AK/Springboot-BankApp-Atharv", branch: "DevOps"
-                echo "Code clone ho gaya"
-
+            echo "Code clone ho gaya"
             }
         }
         stage("Build"){
             steps{
-                sh "docker build --no-cache -t bank-app ."
-                echo "Image Build ho gayi"
+                sh "docker build -t bank_app1 ."
+                echo "Code build ho gaya"
             }
         }
-        stage("test"){
+        stage("Test"){
             steps{
-                echo "Testing ho gayi"
+                echo "Test bhi ho gaya"
             }
         }
         
-        stage("push"){
+        stage("Push"){
             steps{
-                withCredentials([usernamePassword(
-                    credentialsId: "DockerHubCreds",
-                    passwordVariable: "dockerHubPass",
-                    usernameVariable: "dockerHubUser")]){
-                        
-                        sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
-                        sh "docker image tag bank-app ${env.dockerHubUser}/bank-app:latest"
-                        sh "docker push  ${env.dockerHubUser}/bank-app:latest"
-                    }
-                echo "Image push ho gaya"
+                withCredentials([usernamePassword(credentialsId: "DockerHubCreds", passwordVariable: "dockerHubPass", usernameVariable: "dockerHubUser")]){
+                    sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
+                    sh "docker image tag bank_app1 ${env.dockerHubUser}/bank_app1"
+                    sh "docker push ${env.dockerHubUser}/bank_app1"
+                }
             }
         }
+
         stage("Deploy"){
             steps{
-                echo "removing old image"
-                sh "docker rmi bank-app:latest || true"
-                echo "pulling latest"
-                sh "docker pull atharvkarpe/bank-app:latest"
-                sh "docker compose down"
                 sh "docker compose up -d --build bankapp"
-                echo "Application deploy ho gaya"
+                echo "code deploy ho gaya"
             }
         }
-        stage("Cleanup"){
+        stage("Clean"){
             steps{
-                echo "Cleanup unused containers and images"
-                sh "docker system prune -af --volumes"
-                sh "docker container prune -f"
-                sh "docker image prune -af"
-                echo "All cleanup ho gaya...."
-            }    
+                sh "docker system prune -a --force"
+                echo "Cleanup completed"
+            }
         }
     }
 }
