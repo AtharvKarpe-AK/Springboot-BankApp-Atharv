@@ -1,64 +1,42 @@
-pipeline{
-    agent {label "bank_dev"};
-    stages{
-        stage("Clone"){
+pipeline {
+    agent any;
+    stages {
+        stage("Code"){
             steps{
-                git url: "https://github.com/AtharvKarpe-AK/Springboot-BankApp-Atharv", branch: "DevOps"
-            echo "Code clone ho gaya"
-            }
-        }
-        stage("Trivy Scan"){
-            steps{
-                sh "trivy fs ."
+                git url:"https://github.com/AtharvKarpe-AK/Springboot-BankApp-Atharv.git", branch: "DevOps"
+                echo "Clone successfull"
             }
         }
         stage("Build"){
             steps{
-                sh "docker build -t bank_app1 ."
-                echo "Code build ho gaya"
+                sh "docker build -t atharvkarpe/bankapp:latest -f Dockerfile ."
+                echo "Build successfull"
             }
         }
         stage("Test"){
             steps{
-                echo "Test bhi ho gaya"
+                echo "Test successfull"
             }
         }
-        
         stage("Push"){
             steps{
-                withCredentials([usernamePassword(credentialsId: "DockerHubCreds", passwordVariable: "dockerHubPass", usernameVariable: "dockerHubUser")]){
+                withCredentials([usernamePassword(credentialsId: "dockerhub-creds", passwordVariable: "dockerHubPass", usernameVariable: "dockerHubUser")]){
                     sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
-                    sh "docker image tag bank_app1 ${env.dockerHubUser}/bank_app1"
-                    sh "docker push ${env.dockerHubUser}/bank_app1"
+                    sh "docker push atharvkarpe/bankapp:latest"
                 }
             }
         }
-
+        stage("cleanup"){
+            steps{
+                sh "docker image prune -f"
+            }
+        }
         stage("Deploy"){
             steps{
                 sh "docker compose up -d --build bankapp"
-                echo "code deploy ho gaya"
-            }
-        }
-        stage("Clean"){
-            steps{
-                sh "docker system prune -a --force"
-                echo "Cleanup completed"
+                echo "Deploy successfull"
             }
         }
     }
-    post{
-        success{
-            emailext body: 'Hello Atharv, Good News! Your pipeline is successfull..',
-            subject: 'Pipeline is successfull',
-            to: 'atharvkkarpe@gmail.com'
-            
-            
-        }
-        failure{
-            emailext body: 'Hello Atharv, Bad News. Your pipeline is failed..',
-            subject: 'Pipeline is failed',
-            to: 'atharvkkarpe@gmail.com'
-        }
-    }
+    
 }
