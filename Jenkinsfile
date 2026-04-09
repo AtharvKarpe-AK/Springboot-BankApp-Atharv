@@ -38,5 +38,18 @@ pipeline {
             }
         }
     }
+
+    post {
+        success {
+            emailext body: 'Hello Atharv good news: Build Successful!',
+            subject: 'Jenkins Build Successfull!',
+            to: 'atharvkarpe588@gmail.com'
+        }
+        failure {
+            emailext body: 'Hello Atharv bad news: Build failed!',
+            subject: 'Jenkins Build failed!',
+            to: 'atharvkarpe588@gmail.com'
+        }
+    }
     
 }
