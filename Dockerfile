@@ -6,7 +6,7 @@ COPY . /app
 
 RUN mvn clean install -Dmaven.test.skip=true
 
-FROM openjdk:17-alpine
+FROM eclipse-temurin:21-jdk-alpine
 
 WORKDIR /app
 

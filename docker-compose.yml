@@ -1,52 +1,42 @@
-
-
 services:
   mysql:
     container_name: mysql
     image: mysql:latest
+    ports:
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: Test@123
       MYSQL_DATABASE: bankappdb
-
-    ports:
-      - 3306:3306
     networks:
       - bankapp
     volumes:
-      - bank-data:/var/lib/mysql
-
+      - mysql-data:/var/lib/mysql
     healthcheck:
       test: ["CMD","mysqladmin","ping","-h","localhost","-uroot","-pTest@123"]
       interval: 10s
+      timeout: 5s
       retries: 5
       start_period: 60s
-      timeout: 5s
-
-
-
+    restart: always
 
   bankapp:
-    image: atharvkarpe/bank_app1:latest
-    pull_policy: always
     container_name: bankapp
-    ports: 
-      - 9090:9090
-    networks:
-      - bankapp
+    image: atharvkarpe/bankapp:latest   # or use your rebuilt image
+    ports:
+      - "9090:9090"   # IMPORTANT (app runs on 9090)
     environment:
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/bankappdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
       SPRING_DATASOURCE_PASSWORD: Test@123
+      SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/bankappdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+    networks:
+      - bankapp
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     restart: always
-    
 
 volumes:
-  bank-data:
+  mysql-data:
+
 networks:
   bankapp:
-
-
-
-
